@@ -43,11 +43,23 @@ html,body{margin:0!important;padding:0!important;background:#fff!important}
 const K={c:'nt_cust',s:'nt_slips',b:'nt_box'};let editC=null,editS=null;const $=x=>document.getElementById(x);const V=x=>$(x).value;const get=k=>JSON.parse(localStorage.getItem(k)||'[]');const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 function page(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));$(id).classList.add('on');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('on'));btn.classList.add('on');$('title').textContent={dash:'Dashboard',slip:'New Packing Slip',history:'Slip History',customers:'Customer Master'}[id];if(id==='history')renderHistory();if(id==='customers')renderCustomers();if(id==='dash')stats()}
 function nextSlip(){
- let slips=get(KEY.slips);
- let nums=slips.map(x=>Number(x.slipNo)).filter(n=>Number.isFinite(n)&&n>=1001);
- let n=nums.length?Math.max(...nums)+1:1001;
- while(slips.some(x=>String(x.slipNo)===String(n))) n++;
- return String(n);
+    let slips = get(K.s);
+
+    let savedSeq = Number(localStorage.getItem('nt_slip_seq') || 1000);
+
+    let nums = slips
+        .map(x => Number(x.slipNo))
+        .filter(n => Number.isFinite(n) && n >= 1001);
+
+    let maxExisting = nums.length ? Math.max(...nums) : 1000;
+
+    let n = Math.max(savedSeq, maxExisting) + 1;
+
+    while (slips.some(x => String(x.slipNo) === String(n))) {
+        n++;
+    }
+
+    return String(n);
 }function nextBox(){let n=+(localStorage.getItem(K.b)||0)+1;return n}function today(){return new Date().toISOString().slice(0,10)}
 
 function sanitizeInputs(){
