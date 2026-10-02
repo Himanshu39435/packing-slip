@@ -60,7 +60,20 @@ function nextSlip(){
     }
 
     return String(n);
-}function nextBox(){let n=+(localStorage.getItem(K.b)||0)+1;return n}function today(){return new Date().toISOString().slice(0,10)}
+}
+    function lockSlipNumber(slipNo){
+    const n = Number(slipNo);
+    if (!Number.isFinite(n)) return;
+
+    const current = Number(
+        localStorage.getItem('nt_slip_seq') || 1000
+    );
+
+    if (n > current) {
+        localStorage.setItem('nt_slip_seq', String(n));
+    }
+}
+    function nextBox(){let n=+(localStorage.getItem(K.b)||0)+1;return n}function today(){return new Date().toISOString().slice(0,10)}
 
 function sanitizeInputs(){
  ['eway','tgst','design','cg'].forEach(id=>{
